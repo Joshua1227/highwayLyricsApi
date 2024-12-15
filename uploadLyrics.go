@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"unicode"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -42,6 +45,32 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
+
+	file, err := os.Open("Songbook 2019.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	// Iterate over each line in the file
+	count := 0
+	for scanner.Scan() {
+		line := scanner.Text()
+		// fmt.Println(line)
+		if len(line) > 0 && unicode.IsDigit(rune(line[0])) {
+			fmt.Println(line)
+			count++
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Total number of songs = ", count)
+
 }
 
 func getDbCreds(fileName string) string {
