@@ -29,3 +29,5 @@ func GetDbCreds(fileName string) string {
 type DbCreds struct {
 	DbPassword string `json:"mongodb"`
 }
+
+const Uri = `mongodb+srv://sandeepjoshuadaniel:%s@lyricsdb0.1rri3.mongodb.net/?retryWrites=true&w=majority&appName=LyricsDB0`
