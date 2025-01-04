@@ -12,5 +12,11 @@ func main() {
 	router.GET("/getSongId/:id", handlers.GetSongById)
 	router.GET("/searchSongs/:key", handlers.SearchSongs)
 
-	router.Run("localhost:8080")
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	router.Run(":8080")
 }
