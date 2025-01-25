@@ -1,4 +1,4 @@
-package main
+package scripts
 
 import (
 	"bufio"
@@ -17,13 +17,11 @@ import (
 
 // Replace the placeholder with your Atlas connection string
 
-const uri = `mongodb+srv://sandeepjoshuadaniel:%s@lyricsdb0.1rri3.mongodb.net/?retryWrites=true&w=majority&appName=LyricsDB0`
-
 func main() {
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	db_password := database.GetDbCreds("credentials.json")
-	opts := options.Client().ApplyURI(fmt.Sprintf(uri, db_password)).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI(fmt.Sprintf(database.Uri, db_password)).SetServerAPIOptions(serverAPI)
 	// Create a new client and connect to the server
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
