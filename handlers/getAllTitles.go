@@ -26,12 +26,14 @@ func GetAllTitles(c *gin.Context) {
 	}
 	defer func() {
 		if err = client.Disconnect(context.TODO()); err != nil {
+			log.Fatal(err)
 			panic(err)
 		}
 	}()
 
 	coll := client.Database("Highway").Collection("lyrics")
 	if err != nil {
+		log.Fatal(err)
 		panic(err)
 	}
 
@@ -39,6 +41,7 @@ func GetAllTitles(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("FOUND")
 
 	var data []models.Title
 
@@ -48,8 +51,9 @@ func GetAllTitles(c *gin.Context) {
 			log.Fatal(err)
 		}
 		data = append(data, result)
-		fmt.Printf("%+v\n", result)
+		// fmt.Printf("%+v\n", result)
 	}
+	fmt.Println("Returning")
 	if err := cursor.Err(); err != nil {
 		log.Fatal(err)
 		gin.Logger()
