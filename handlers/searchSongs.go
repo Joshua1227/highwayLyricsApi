@@ -33,14 +33,19 @@ func SearchSongs(c *gin.Context) {
 
 	coll := client.Database("Highway").Collection("lyrics")
 
-	filter := bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: key}}}}
-	sort := bson.D{{Key: "score", Value: bson.D{{Key: "$meta", Value: "textScore"}}}}
-	projection := bson.D{{Key: "_id", Value: 1}, {Key: "title", Value: 1}, {Key: "lyrics", Value: 1}, {Key: "approvedby", Value: 1}, {Key: "addedby", Value: 1}, {Key: "score", Value: bson.D{{Key: "$meta", Value: "textScore"}}}}
-	seachOpts := options.Find().SetSort(sort).SetProjection(projection)
-	cursor, err := coll.Find(context.TODO(), filter, seachOpts)
+	key = fmt.Sprintf("\"%s\"", key)
+	pipeline := []bson.D{
+		{{Key: "$match", Value: bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: key}}}}}},
+		{{Key: "$addFields", Value: bson.D{{Key: "score", Value: bson.D{{Key: "$meta", Value: "textScore"}}}}}},
+		{{Key: "$match", Value: bson.D{{Key: "score", Value: bson.D{{Key: "$gte", Value: 0.5}}}}}}, // Minimum score of 0.5
+		{{Key: "$sort", Value: bson.D{{Key: "score", Value: -1}}}},                                 // Sort by score (optional)
+	}
+
+	cursor, err := coll.Aggregate(context.TODO(), pipeline)
 	if err != nil {
 		panic(err)
 	}
+
 	var searchedSongs []models.Song
 	// var results []interface{}
 	if err = cursor.All(context.TODO(), &searchedSongs); err != nil {
