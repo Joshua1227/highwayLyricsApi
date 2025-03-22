@@ -22,8 +22,8 @@ func GetDbCreds(fileName string) string {
 	// we unmarshal our byteArray which contains our
 	// jsonFile's content into 'users' which we defined above
 	json.Unmarshal(byteValue, &creds)
-
-	return creds.DbPassword
+	return "MRzu1AxT52MQxBvL"
+	// return creds.DbPassword
 }
 
 type DbCreds struct {
